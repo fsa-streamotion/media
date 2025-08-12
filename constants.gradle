@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 project.ext {
-    releaseVersion = '1.9.0'
+    // Todo we are planning to append build version along with original exoplayer version
+    // eg if original exoplayer version is 1.8.0 then we will append 1.8.0-1,
+    // we can increment this number everytime we make new changes which is very minimal
+    releaseVersion = '1.9.0-1'
     releaseVersionCode = 1_009_000_3_00
     minSdkVersion = 23
     // See https://developer.android.com/training/cars/media/automotive-os#automotive-module
