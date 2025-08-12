@@ -17,26 +17,37 @@ apply from: "$gradle.ext.androidxMediaSettingsDir/missing_aar_type_workaround.gr
 
 afterEvaluate {
     if (gradle.ext.has('rootProjectIsAndroidXMedia3') && gradle.ext.rootProjectIsAndroidXMedia3) {
+
+        // TODO: Replace these with your actual GitHub credentials
+        def githubUsername = "REPLACE_WITH_YOUR_GITHUB_USERNAME"
+        def githubToken = "REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN"
+
         publishing {
             repositories {
                 maven {
-                    url = findProperty('mavenRepo') ?: "${buildDir}/repo"
+                    name = "GitHubPackages"
+                    url = uri("https://maven.pkg.github.com/fsa-streamotion/media")
+                    credentials {
+                        username = githubUsername
+                        password = githubToken
+                    }
                 }
             }
             publications {
                 release(MavenPublication) {
                     from components.release
-                    groupId = 'androidx.media3'
+                    groupId = 'au.com.streamotion.media3'
                     artifactId = findProperty('releaseArtifactId') ?: ''
-                    version = findProperty('releaseVersion') ?: ''
+                    version = findProperty('releaseVersion') ?: System.getenv("VERSION") ?: ''
+
+                    // Add source jar
+                    if (!artifacts.find { it.classifier == 'sources' }) {
+                        artifact(sourceJar)
+                    }
+
                     pom {
-                        name =
-                            findProperty('releaseName')
-                            ?: ''
-                        description =
-                            findProperty('releaseDescription')
-                            ?: findProperty('releaseName')
-                            ?: ''
+                        name = findProperty('releaseName') ?: ''
+                        description = findProperty('releaseDescription') ?: findProperty('releaseName') ?: ''
                         licenses {
                             license {
                                 name = 'The Apache Software License, Version 2.0'
@@ -46,12 +57,12 @@ afterEvaluate {
                         }
                         developers {
                             developer {
-                                name = 'The Android Open Source Project'
+                                name = 'Forked Media3-ExoPlayer'
                             }
                         }
                         scm {
-                            connection = 'scm:git:https://github.com/androidx/media.git'
-                            url = 'https://github.com/androidx/media'
+                            connection = 'scm:git:https://github.com/fsa-streamotion/media.git'
+                            url = 'https://github.com/fsa-streamotion/media'
                         }
                         withXml {
                             addMissingAarTypeToXml(it)
@@ -61,4 +72,10 @@ afterEvaluate {
             }
         }
     }
+}
+
+// Add source jar task (similar to your player repo)
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set("sources")
 }
