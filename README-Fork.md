@@ -5,6 +5,10 @@ whenever exoplayer releases a new version we will update this branch
 Version Releases ChangeLog
 --------
 
+
+1.9.0-1 
+SGAI cherry picked changes 
+
 1.8.0-2
 
 Added more flexible support for device capability check
